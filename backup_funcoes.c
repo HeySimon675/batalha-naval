@@ -47,3 +47,20 @@ void Aviao (char m[20][20], int n,char id){
         }
     }
 }
+void Coloca_Aviao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j_final){
+    extern int POS;
+    int i,j;
+    char id='1';
+    if (POS){
+        i=i_inicial;
+        m[i_inicial+1][j_inicial+1]=id;
+        for (j = j_inicial; j < j_final; j++)
+            m[i][j] = id;   //coloca a "cauda" do avião
+    }
+    else{
+        j=j_inicial+1;
+        for (i = i_inicial; i < i_final; i++)
+            m[i][j] = id;
+        m[i_inicial+1][j_inicial]=id;
+    }
+}
