@@ -64,3 +64,25 @@ void Coloca_Aviao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j
         m[i_inicial+1][j_inicial]=id;
     }
 }
+
+void Coloca_Espiao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j_final,char id){
+    extern int POS;
+    int i,j;
+    if (POS) { //caso a embarcação troque de posição
+        j=j_inicial+1;
+        for (i = i_inicial; i < i_final; i++) {
+            m[i][j] = id;
+        }
+        m[i-1][j_inicial] = id;     //coloca as "turbinas" da embarcação
+        m[i-1][j_inicial+2] = id;
+    }
+    else{
+        i=i_inicial+1;
+        for(j=j_inicial;j < j_final; j++){
+            m[i][j]=id;
+        }
+        m[i_inicial][j_inicial]=id;
+        m[i_inicial+2][j_inicial]=id;
+    }
+    
+    
