@@ -123,7 +123,7 @@ int Posicionadora (char m[20][20], int largura,int altura, char id){
     }
     return (1); //retorna 1 se encontrou a posição valida
 }
-//Solicita n Porta aviões :D
+//Solicita n Porta aviões
 void Porta_Avioes(char m[20][20], int n) {
     extern int POS;
     int i, erro = 0;
@@ -141,7 +141,7 @@ void Porta_Avioes(char m[20][20], int n) {
         }
     }
 }
-//Solicita n Submarinos :P
+//Solicita n Submarinos
 void Submarino(char m[20][20], int n, char id) {
     extern int POS;
     int  i, erro = 0;
@@ -174,7 +174,7 @@ void Espiao (char m[20][20], int n, char id) {
         }
     }
 }
-//Solicita n aviões <3
+//Solicita n aviões
 void Aviao (char m[20][20], int n,char id){
     extern int POS;
     int largura ,altura;
@@ -191,7 +191,7 @@ void Aviao (char m[20][20], int n,char id){
         }
     }
 }
-//Solicita n bombas (:
+//Solicita n bombas
 void Bomba (char m[20][20], int n){
     int i,erro;
     for (i = 0; i < n; i++) {
