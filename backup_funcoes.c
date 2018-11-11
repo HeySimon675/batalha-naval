@@ -30,3 +30,20 @@ void Porta_Avioes(char m[20][20], int n) {
         }
     }
 }
+
+void Aviao (char m[20][20], int n,char id){
+    extern int POS;
+    int largura ,altura;
+    int  i, erro = 0;
+    for (i = 0; i < n; i++) {
+        largura = 2;
+        altura = 3;
+        erro = 0;
+        POS = rand() % 2;    //guarda a posição da figura em uma variavel externa
+        if (POS)
+            Posicao(&largura,&altura);
+        while (!erro) {
+            erro = Posicionadora(m, largura, altura, id);
+        }
+    }
+}
