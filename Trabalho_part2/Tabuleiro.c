@@ -1,14 +1,21 @@
 //
-// Created by root on 14/11/18.
-//
+// Created by simao on 16/11/18.
 /*=========GERADOR DE TABULEIRO==========*/
-#include "tabuleiro.h"
+#include "Tabuleiro.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+#define NEM 4
+#define NORTE 0
+#define SUL 1
+#define LESTE 2
+#define OESTE 3
+
 //Declaração de variaveis externas:
 
 int POS; //A Variavel POS será usava pra guardar a posição das embarcações
+FILE *TAB;   //Endereço do tabuleiro, usado para fprintf
 
 //Preenche a matriz com *
 void Preenche_Matriz(char m[20][20]){
@@ -102,7 +109,8 @@ void Coloca_Aviao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j
     }
 }
 //ENCONTRA UMA POSIÇÃO VALIDA E ALOCA AS EMBARCAÇÕES
-int Posicionadora (char m[20][20], int largura,int altura, char id){
+int Posicionadora (char m[20][20], int largura,int altura, char id, int num){
+    extern FILE* TAB;
     int i_final,j_final,i,j, i_inicial, j_inicial;
     i_inicial = rand() % (20 - altura);     //sorteia uma posição, limitada pelo tamanho da embarcação
     j_inicial = rand() % (20 - largura);
@@ -118,8 +126,10 @@ int Posicionadora (char m[20][20], int largura,int altura, char id){
         Coloca_Espiao(m,i_inicial,j_inicial,i_final,j_final,id);
     else if (id=='1'){              //para avião
         Coloca_Aviao(m,i_inicial,j_inicial,i_final,j_final);
-    }else if(id=='0')               //para bomba
-        m[i_inicial][j_inicial]=id;
+    }else if(id=='0') {             //para bomba
+        m[i_inicial][j_inicial] = id;
+        fprintf(TAB, "%d %c %d %d %d", num, id, NEM, i_inicial, i_final);
+    }
     else {                          // para Porta avioes e Submarino
         for (i = i_inicial; i < i_final; i++) {
             for (j = j_inicial; j < j_final; j++)
@@ -142,7 +152,7 @@ void Porta_Avioes(char m[20][20], int n) {
         if (POS%2)
             Posicao(&largura,&altura);
         while (!erro) {     //Continua até conseguir posicionar a embarcação
-            erro = Posicionadora(m, largura, altura, id);
+            erro = Posicionadora(m, largura, altura, id, n);
         }
     }
 }
@@ -158,7 +168,7 @@ void Submarino(char m[20][20], int n, char id) {
         if (POS%2)
             Posicao(&largura,&altura);
         while (!erro) {
-            erro = Posicionadora(m, largura, altura, id);
+            erro = Posicionadora(m, largura, altura, id, n);
         }
     }
 }
@@ -175,7 +185,7 @@ void Espiao (char m[20][20], int n, char id) {
         if (POS%2)
             Posicao(&largura,&altura);
         while (!erro) {
-            erro = Posicionadora(m, largura, altura, id);
+            erro = Posicionadora(m, largura, altura, id, n);
         }
     }
 }
@@ -192,7 +202,7 @@ void Aviao (char m[20][20], int n,char id){
         if (POS%2)
             Posicao(&largura,&altura);
         while (!erro) {
-            erro  = Posicionadora(m, largura, altura, id);
+            erro  = Posicionadora(m, largura, altura, id, n);
         }
     }
 }
@@ -202,11 +212,11 @@ void Bomba (char m[20][20], int n){
     for (i = 0; i < n; i++) {
         erro=0;
         while (!erro){
-            erro=Posicionadora(m,1,1,'0');
+            erro=Posicionadora(m,1,1,'0',n);
         }
     }
 }
-//Exibe o tabuleiro com suas respectivas coordenadas :)
+//Exibe o tabuleiro com suas respectivas coordenadas, presente no header, será necessario uma versão que printa a partir de um arquivo
 void Printa_Matriz(char m[20][20]){
     int i,largura=20,altura=20;
     char j;
@@ -222,27 +232,29 @@ void Printa_Matriz(char m[20][20]){
     }
 }
 
-FILE * CreateTab(char* nome_arquivo){
-
-    FILE *tabuleiro = fopen(tabuleiro, "w");
-    if(tabuleiro != NULL)
-        return (-1);
-        //não foi possivel criar o arquivo
+FILE* CreateTab(char* nome_arquivo){
+    extern FILE* TAB;
+    TAB = fopen(nome_arquivo, "w");
+    if(nome_arquivo != NULL)
+        exit (-1);
+    //não foi possivel criar o arquivo
+    return (TAB);
 }
 
-int main() {
+FILE* CriaTabuleiro(int modo){  //Primeira função do header, retorna o endereço pra um arquivo com dados do tabuleiro
+
+    FILE *tab = CreateTab((modo)? "tab_player.txt" : "tab_maq.txt" );
     char matriz[20][20];
-    char* Nome_tabuleiro; //nome que será definido pela variavel modo.
-    
-    FILE* tab = CreateTab(Nome_tabuleiro);
     srand(time(NULL));
     Preenche_Matriz(matriz);
-    Porta_Avioes(matriz,2);
-    Espiao(matriz,4,'3');
-    Espiao(matriz,4,'4');
-    Aviao(matriz,5,'1');
-    Submarino(matriz,5,'2');
+    //AS FUNÇÕES FORAM DESATIVADAS PARA SEREM ADAPTADAS E TESTADAS UMA A UMA
+    //Porta_Avioes(matriz,2);
+    //Espiao(matriz,4,'3');
+    //Espiao(matriz,4,'4');
+    //Aviao(matriz,5,'1');
+    //Submarino(matriz,5,'2');
     Bomba(matriz,10);
     Printa_Matriz(matriz);  //substituir por impressão em arquivo .txt
-    return 0;
+    return (tab);
 }
+
