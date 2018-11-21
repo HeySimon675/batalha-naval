@@ -15,7 +15,7 @@
 //Declaração de variaveis externas:
 
 int POS; //A Variavel POS será usava pra guardar a posição das embarcações
-FILE *TAB;   //Endereço do tabuleiro, usado para fprintf
+FILE *tab;   //Endereço do tabuleiro, usado para fprintf
 
 //Preenche a matriz com *
 void Preenche_Matriz(char m[20][20]){
@@ -37,36 +37,40 @@ void Posicao (int *largura, int *altura){
 
 
 //COLOCA EMBARCAÇÃO DO TIPO ESPIAO NA MATRIZ
-void Coloca_Espiao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j_final,char id){
+void Coloca_Espiao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j_final,char id,int num){
     extern int POS;
     int i,j;
     switch (POS){
-        case 0: //horizontal direcionado para a direita
+        case 0: //horizontal direcionado para a direita   LESTE
             i=i_inicial+1;
+            fprintf(tab, "%d %c %d %d %d\n", num, id, LESTE, i, j_inicial);
             for(j=j_inicial;j < j_final; j++){
                 m[i][j]=id;
             }
             m[i_inicial][j_inicial]=id;
             m[i_inicial+2][j_inicial]=id;
             break;
-        case 1: //vertical para cima
+        case 1: //vertical para cima   NORTE
             j=j_inicial+1;
+            fprintf(tab, "%d %c %d %d %d\n", num, id, NORTE,i_final-1 , j);
             for (i = i_inicial; i < i_final; i++) {
                 m[i][j] = id;
             }
             m[i-1][j_inicial] = id;     //coloca as "turbinas" da embarcação
             m[i-1][j_inicial+2] = id;
             break;
-        case 2:  //horizontal direcionado para a esquerda
+        case 2:  //horizontal direcionado para a esquerda   OESTE
             i=i_inicial+1;
+            fprintf(tab, "%d %c %d %d %d\n", num, id, OESTE, i, j_final-1);
             for(j=j_inicial;j < j_final; j++){
                 m[i][j]=id;
             }
             m[i_inicial][j_final-1]=id;
             m[i_inicial+2][j_final-1]=id;
             break;
-        case 3:     //vertical para baixo
+        case 3:     //vertical para baixo SUL
             j=j_inicial+1;
+            fprintf(tab, "%d %c %d %d %d\n", num, id, SUL,i_inicial , j);
             for (i = i_inicial; i < i_final; i++) {
                 m[i][j] = id;
             }
@@ -77,31 +81,35 @@ void Coloca_Espiao (char m[20][20], int i_inicial,int j_inicial,int i_final,int 
 
 }
 //COLOCA EMBARCAÇÕES DO TIPO AVIÃO
-void Coloca_Aviao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j_final){
+void Coloca_Aviao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j_final,int num){
     extern int POS;
     int i,j;
     char id='1';
     switch (POS) {
-        case 0:
+        case 0:// leste
             j = j_inicial + 1;
+            fprintf(tab, "%d %c %d %d %d\n", num, id,LESTE ,i_inicial+1 ,j_inicial+1);
             for (i = i_inicial; i < i_final; i++)
                 m[i][j] = id;
             m[i_inicial + 1][j_inicial] = id;
             break;
-        case 1:
+        case 1: //NORTE
             i = i_inicial;
+            fprintf(tab, "%d %c %d %d %d\n", num, id, NORTE,i_inicial ,j_inicial+1);
             m[i_inicial + 1][j_inicial + 1] = id;
             for (j = j_inicial; j < j_final; j++)
                 m[i][j] = id;   //coloca a "cauda" do avião
             break;
         case 2 :
             j = j_inicial;
+            fprintf(tab, "%d %c %d %d %d\n", num, id, OESTE,i_inicial+1 , j_inicial);
             for (i = i_inicial; i < i_final; i++)
                 m[i][j] = id;
             m[i_inicial + 1][j_inicial+1] = id;
             break;
         case 3:
             i = i_inicial+1;
+            fprintf(tab, "%d %c %d %d %d\n", num, id, SUL,i_inicial+1 , j_inicial+1);
             m[i_inicial][j_inicial + 1] = id;
             for (j = j_inicial; j < j_final; j++)
                 m[i][j] = id;   //coloca a "cauda" do avião
@@ -110,8 +118,9 @@ void Coloca_Aviao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j
 }
 //ENCONTRA UMA POSIÇÃO VALIDA E ALOCA AS EMBARCAÇÕES
 int Posicionadora (char m[20][20], int largura,int altura, char id, int num){
-    extern FILE* TAB;
-    int i_final,j_final,i,j, i_inicial, j_inicial;
+    extern FILE* tab;
+    extern int POS;
+    int i_final,j_final,i,j, i_inicial, j_inicial, sentido;
     i_inicial = rand() % (20 - altura);     //sorteia uma posição, limitada pelo tamanho da embarcação
     j_inicial = rand() % (20 - largura);
     i_final = i_inicial + altura;
@@ -123,17 +132,25 @@ int Posicionadora (char m[20][20], int largura,int altura, char id, int num){
         }
     }
     if ((id=='3') || (id=='4'))     //para espião
-        Coloca_Espiao(m,i_inicial,j_inicial,i_final,j_final,id);
+        Coloca_Espiao(m,i_inicial,j_inicial,i_final,j_final,id,num);
     else if (id=='1'){              //para avião
-        Coloca_Aviao(m,i_inicial,j_inicial,i_final,j_final);
+        Coloca_Aviao(m,i_inicial,j_inicial,i_final,j_final,num);
     }else if(id=='0') {             //para bomba
         m[i_inicial][j_inicial] = id;
-        fprintf(TAB, "%d %c %d %d %d", num, id, NEM, i_inicial, i_final);
+        fprintf(tab, "%d %c %d %d %d\n", num, id, NEM, i_inicial, j_final);
     }
     else {                          // para Porta avioes e Submarino
         for (i = i_inicial; i < i_final; i++) {
             for (j = j_inicial; j < j_final; j++)
                 m[i][j] = id;
+        }
+        if((!POS)||(POS==2)){
+            sentido= (POS==0)? LESTE : OESTE;
+            fprintf(tab, "%d %c %d %d %d\n", num, id, sentido , i_inicial, j_inicial);
+        }
+        else if((POS==1)||(POS==3)){
+            sentido= (POS==1)? SUL : NORTE;
+            fprintf(tab, "%d %c %d %d %d\n", num, id, sentido, i_final-1, j_final-1 );
         }
     }
     return (1); //retorna 1 se encontrou a posição valida
@@ -152,7 +169,7 @@ void Porta_Avioes(char m[20][20], int n) {
         if (POS%2)
             Posicao(&largura,&altura);
         while (!erro) {     //Continua até conseguir posicionar a embarcação
-            erro = Posicionadora(m, largura, altura, id, n);
+            erro = Posicionadora(m, largura, altura, id, i);
         }
     }
 }
@@ -168,7 +185,7 @@ void Submarino(char m[20][20], int n, char id) {
         if (POS%2)
             Posicao(&largura,&altura);
         while (!erro) {
-            erro = Posicionadora(m, largura, altura, id, n);
+            erro = Posicionadora(m, largura, altura, id, i);
         }
     }
 }
@@ -185,7 +202,7 @@ void Espiao (char m[20][20], int n, char id) {
         if (POS%2)
             Posicao(&largura,&altura);
         while (!erro) {
-            erro = Posicionadora(m, largura, altura, id, n);
+            erro = Posicionadora(m, largura, altura, id, i);
         }
     }
 }
@@ -202,7 +219,7 @@ void Aviao (char m[20][20], int n,char id){
         if (POS%2)
             Posicao(&largura,&altura);
         while (!erro) {
-            erro  = Posicionadora(m, largura, altura, id, n);
+            erro  = Posicionadora(m, largura, altura, id, i);
         }
     }
 }
@@ -212,7 +229,7 @@ void Bomba (char m[20][20], int n){
     for (i = 0; i < n; i++) {
         erro=0;
         while (!erro){
-            erro=Posicionadora(m,1,1,'0',n);
+            erro=Posicionadora(m,1,1,'0',i);
         }
     }
 }
@@ -221,7 +238,7 @@ void Printa_Matriz(char m[20][20]){
     int i,largura=20,altura=20;
     char j;
     printf("   ");
-    for(j='A';j<'A'+largura;j++)
+    for(j='A';j<'A'+largura;j++) // printa o cabeçalho da matriz de A até T
         printf("%c ",j);
     printf("\n");
     for(i=0;i<altura;i++){
@@ -232,28 +249,28 @@ void Printa_Matriz(char m[20][20]){
     }
 }
 
-FILE* CreateTab(char* nome_arquivo){
-    extern FILE* TAB;
-    TAB = fopen(nome_arquivo, "w");
-    if(nome_arquivo != NULL)
-        exit (-1);
+void CreateTab(){
+    extern FILE* tab;
+    tab = fopen("tabuleiro.txt","w");
+    if(tab == NULL)
+        exit(-1);
     //não foi possivel criar o arquivo
-    return (TAB);
+
 }
 
-FILE* CriaTabuleiro(int modo){  //Primeira função do header, retorna o endereço pra um arquivo com dados do tabuleiro
-
-    FILE *tab = CreateTab((modo)? "tab_player.txt" : "tab_maq.txt" );
+FILE* CriaTabuleiro(){  //Primeira função do header, retorna o endereço pra um arquivo com dados do tabuleiro
+    extern FILE* tab;
     char matriz[20][20];
+    CreateTab(tab);
     srand(time(NULL));
     Preenche_Matriz(matriz);
     //AS FUNÇÕES FORAM DESATIVADAS PARA SEREM ADAPTADAS E TESTADAS UMA A UMA
-    //Porta_Avioes(matriz,2);
-    //Espiao(matriz,4,'3');
-    //Espiao(matriz,4,'4');
-    //Aviao(matriz,5,'1');
-    //Submarino(matriz,5,'2');
     Bomba(matriz,10);
+    Aviao(matriz,5,'1');
+    Submarino(matriz,5,'2');
+    Espiao(matriz,4,'3');
+    Espiao(matriz,4,'4');
+    Porta_Avioes(matriz,2);
     Printa_Matriz(matriz);  //substituir por impressão em arquivo .txt
     return (tab);
 }
