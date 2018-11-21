@@ -1,4 +1,3 @@
-
 /*=========GERADOR DE TABULEIRO==========*/
 
 #include <stdio.h>
