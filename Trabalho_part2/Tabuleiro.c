@@ -1,7 +1,7 @@
 //
 // Created by simao on 16/11/18.
 /*=========GERADOR DE TABULEIRO==========*/
-#include "Tabuleiro.h"
+#include "Gtabuleiro.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
