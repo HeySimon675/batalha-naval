@@ -13,7 +13,7 @@ typedef struct {
     int fim_de_jogo;
 }Game;
 
-int NovoGame(char* tab1,char* tab2);//recebe o txt dos tabuleiros, cria os jogadores, e inicializa os atributos de controles
+Game* NovoGame(char* tab1,char* tab2);//recebe o txt dos tabuleiros, cria os jogadores, e inicializa os atributos de controles
 void AtirarPlayer(Game* jogo,int id); //requisita as posiçoes i j onde o jogador deseja atirar e
                                         // atualiza o jogo mostrando o efeito da jogada
 int VitoriasDaMaquina();        //Motra o numero de vitorias da maquina, e a porcentagem em relação a todas as partidas
