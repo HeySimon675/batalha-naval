@@ -249,29 +249,28 @@ void Printa_Matriz(char m[20][20]){
     }
 }
 
-void CreateTab(){
+void CreateTab(char* nome){
     extern FILE* tab;
-    tab = fopen("tabuleiro.txt","w");
+    tab = fopen(nome,"w");
     if(tab == NULL)
         exit(-1);
     //não foi possivel criar o arquivo
 
 }
 
-FILE* CriaTabuleiro(){  //Primeira função do header, retorna o endereço pra um arquivo com dados do tabuleiro
+void GeraTabuleiro(char* nome){  //Primeira função do header, retorna o endereço pra um arquivo com dados do tabuleiro
     extern FILE* tab;
     char matriz[20][20];
-    CreateTab(tab);
+    CreateTab(nome);
     srand(time(NULL));
     Preenche_Matriz(matriz);
-    //AS FUNÇÕES FORAM DESATIVADAS PARA SEREM ADAPTADAS E TESTADAS UMA A UMA
     Bomba(matriz,10);
     Aviao(matriz,5,'1');
     Submarino(matriz,5,'2');
     Espiao(matriz,4,'3');
     Espiao(matriz,4,'4');
     Porta_Avioes(matriz,2);
-    Printa_Matriz(matriz);  //substituir por impressão em arquivo .txt
-    return (tab);
+   // Printa_Matriz(matriz);  //substituir por impressão em arquivo .txt
+    fclose(tab);
 }
 
