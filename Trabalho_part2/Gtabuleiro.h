@@ -13,7 +13,7 @@
 void Printa_Matriz(char m[20][20]);
 
 //Cria um tabuleiro .txt
-FILE* CriaTabuleiro ();                      // 0 para maquina 1 para player, serão necessarios dois ponteiro pra FILE
+void GeraTabuleiro (char* nome);                      // 0 para maquina 1 para player, serão necessarios dois ponteiro pra FILE
 
 
 
