@@ -11,10 +11,10 @@ typedef struct {
     int id;
     int vencedor;
     int frota_total;
-    Tabuleiro tab;
+    Tabuleiro* tab;
 }Jogador;
 
-Jogador* CadastraJogador(int id);
+Jogador* CadastraJogador(int id,char* tab);
 int FrotaAtual (Jogador* player);
 
 
