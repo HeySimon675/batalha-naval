@@ -5,10 +5,11 @@
 #include "Celula.h"
 #include <stdlib.h>
 
-Celula* CriaCelula(){
-    Celula* c= (Celula*) malloc(sizeof(Celula));
-    c->visivel=0;
-    c->valor= '*';
+Celula CriaCelula(){
+    Celula c;
+    c.visivel=0;
+    c.valor= '*';
+    c.inicial=0;
     return (c);
 }
 void DestroiCelula(Celula* campo){
