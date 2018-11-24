@@ -8,9 +8,10 @@
 typedef struct {
     int visivel;
     char valor;
+    int inicial;
 }Celula;
 
-Celula* CriaCelula();
+Celula CriaCelula();
 void DestroiCelula(Celula* campo);
 char Tiro(Celula* campo);
 
