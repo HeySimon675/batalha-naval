@@ -79,7 +79,38 @@ void IncluiSubmarino (Tabuleiro* tab, int i, int j, int pos){
 }
 
 void IncluiEspiao (Tabuleiro* tab, int i, int j, int pos,char id){
-    
+    int x,y;
+    switch (pos){
+        case LESTE: //LESTE
+            for(y=j; y<(j+4) ; y++){  //(y+4) esta definindo o limite de largura do espiao
+                tab->matriz_campo[i][y].valor=id;
+            }
+            tab->matriz_campo[i-1][j].valor=id;
+            tab->matriz_campo[i+1][j].valor=id;
+            break;
+        case OESTE: // OESTE
+            for(y=(j-3); y<(j+1) ; y++){  //(j-3) pois o ponto inicial é na ponta direita, (y+1) esta definindo o limite de largura do espiao
+                tab->matriz_campo[i][y].valor=id ;
+            }
+            tab->matriz_campo[i+1][j].valor=id ;
+            tab->matriz_campo[i-1][j].valor=id ;
+            break;
+
+        case SUL:
+            for(x=i; x<(i+4) ; x++){  //(i+4) esta definindo o limite de altura do submarino
+                tab->matriz_campo[x][j].valor=id; // 2 é o id do submarino
+            }
+            tab->matriz_campo[i][j-1].valor=id ;
+            tab->matriz_campo[i][j+1].valor=id ;
+            break;
+        case NORTE:
+            for(x=(i-3); x<(i+1) ; x++){  //(i-3) pois o ponto inicial é na ponta embaixo, (x+1) esta definindo o limite de altura do espiao
+                tab->matriz_campo[x][j].valor=id;
+            }
+            tab->matriz_campo[i][j-1].valor=id ;
+            tab->matriz_campo[i][j+1].valor=id ;
+            break;
+    }
 }
 
 void IncluiPAviao (Tabuleiro* tab, int i, int j, int pos){
@@ -90,14 +121,14 @@ void IncluiPAviao (Tabuleiro* tab, int i, int j, int pos){
 
             for(x=i;x<(i+2);x++) { // (i+2) é o limite da altura do porta avioes no sentido leste
                 for (y = j; y < (j + 5); y++) {  //(j+5) esta definindo o limite de largura do porta avioes
-                    tab->matriz_campo[i][y].valor = '5'; // 5 é o id do porta avioes
+                    tab->matriz_campo[x][y].valor = '5'; // 5 é o id do porta avioes
                 }
             }
             break;
         case OESTE: // OESTE
             for (x=(i-1); x< (i+1) ; x++) { //(i+1) é o limite da altura do porta avioes
                  for (y = (j - 4); y < (j + 1); y++) {  //(j-4) pois o ponto inicial é na ponta direita, (j+1) esta definindo o limite de altura do porta avioes
-                    tab->matriz_campo[i][y].valor = '5';
+                    tab->matriz_campo[x][y].valor = '5';
                 }
             }
             break;
@@ -105,14 +136,14 @@ void IncluiPAviao (Tabuleiro* tab, int i, int j, int pos){
         case NORTE: //NORTE
             for (x=i; x< (i+5) ; x++) { //(i+5) é o limite da altura do porta avioes quando esta na vertical
                 for (y = j; y < (j + 2); y++) {  //(j+2) esta definindo o limite de largura do porta avioes
-                    tab->matriz_campo[i][y].valor = '5';
+                    tab->matriz_campo[x][y].valor = '5';
                 }
             }
             break;
         case SUL: //SUL
             for (x=(i-4); x< (i+1) ; x++) { //(i-4), pois o ponto inicial está na ultima linha, (i+1) é o limite da altura do porta avioes
                 for (y = (j-1); y < (j + 1); y++) {  //(j-1) pois o ponto inicial é na ponta direita, (j+1) esta definindo o limite de altura do porta avioes
-                    tab->matriz_campo[i][y].valor = '5';
+                    tab->matriz_campo[x][y].valor = '5';
                 }
             }
             break;
