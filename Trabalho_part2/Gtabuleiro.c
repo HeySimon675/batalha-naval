@@ -146,11 +146,18 @@ int Posicionadora (char m[20][20], int largura,int altura, char id, int num){
         }
         if((!POS)||(POS==2)){
             sentido= (POS==0)? LESTE : OESTE;
-            fprintf(tab, "%d %c %d %d %d\n", num, id, sentido , i_inicial, j_inicial);
+            //a posição inicial passada para o arquivo é a mesma independente do sentido
+            if (sentido==OESTE){
+                fprintf(tab, "%d %c %d %d %d\n", num, id, sentido , i_final-1, j_final-1);
+            }else
+                fprintf(tab, "%d %c %d %d %d\n", num, id, sentido , i_inicial, j_inicial);
         }
         else if((POS==1)||(POS==3)){
             sentido= (POS==1)? SUL : NORTE;
-            fprintf(tab, "%d %c %d %d %d\n", num, id, sentido, i_final-1, j_final-1 );
+            if(sentido==SUL){
+                fprintf(tab, "%d %c %d %d %d\n", num, id, sentido , i_inicial, j_inicial);
+            }else
+                fprintf(tab, "%d %c %d %d %d\n", num, id, sentido, i_final-1, j_final-1 );
         }
     }
     return (1); //retorna 1 se encontrou a posição valida
@@ -270,7 +277,7 @@ void GeraTabuleiro(char* nome){  //Primeira função do header, retorna o endere
     Espiao(matriz,4,'3');
     Espiao(matriz,4,'4');
     Porta_Avioes(matriz,2);
-   // Printa_Matriz(matriz);  //substituir por impressão em arquivo .txt
+    Printa_Matriz(matriz);  //printa a matriz de char usada para gerar o tabuleiro
     fclose(tab);
 }
 
