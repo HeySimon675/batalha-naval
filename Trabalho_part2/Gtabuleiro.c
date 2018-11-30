@@ -35,6 +35,31 @@ void Posicao (int *largura, int *altura){
     *altura = aux;
 }
 
+void Coloca_Submarino (char m[20][20], int i_inicial, int j_inicial, int i_final, int j_final, int num){
+    int i, j;
+    extern int POS;
+    for (i = i_inicial; i < i_final; i++) {
+        for (j = j_inicial; j < j_final; j++)
+            m[i][j] = '2';
+    }
+    switch (POS){
+        case 0:
+            fprintf(tab,"%d 2 %d %d %d\n",num,LESTE,i_inicial,j_inicial);
+            break;
+        case 1:
+            fprintf(tab,"%d 2 %d %d %d\n",num,NORTE,i_inicial,j_inicial);
+            break;
+        case 2:
+            fprintf(tab,"%d 2 %d %d %d\n",num,OESTE,i_inicial,j_final-1);
+            break;
+        case 3:
+            fprintf(tab,"%d 2 %d %d %d\n",num,SUL,i_final-1,j_inicial);
+
+            break;
+    }
+
+}
+
 
 //COLOCA EMBARCAÇÃO DO TIPO ESPIAO NA MATRIZ
 void Coloca_Espiao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j_final,char id,int num){
@@ -138,15 +163,32 @@ int Posicionadora (char m[20][20], int largura,int altura, char id, int num){
     }else if(id=='0') {             //para bomba
         m[i_inicial][j_inicial] = id;
         fprintf(tab, "%d %c %d %d %d\n", num, id, NEM, i_inicial, j_final);
+    }else if(id=='2'){
+        Coloca_Submarino(m,i_inicial,j_inicial,i_final,j_final,num);
     }
     else {                          // para Porta avioes e Submarino
         for (i = i_inicial; i < i_final; i++) {
             for (j = j_inicial; j < j_final; j++)
                 m[i][j] = id;
         }
-        if((!POS)||(POS==2)){
+        switch (POS) {
+            case 0://leste
+                fprintf(tab, "%d %c %d %d %d\n", num, id, LESTE, i_inicial, j_inicial);
+                break;
+            case 2://oeste
+                fprintf(tab, "%d %c %d %d %d\n", num, id, OESTE, (i_final - 1), (j_final - 1));
+                break;
+            case 1://norte
+                fprintf(tab, "%d %c %d %d %d\n", num, id, NORTE, i_inicial, j_inicial);
+                break;
+            case 3://sul
+                fprintf(tab, "%d %c %d %d %d\n", num, id, SUL, (i_final - 1), (j_final - 1));
+                break;
+        }
+        }
+        /*if((!POS)||(POS==2)){
             sentido= (POS==0)? LESTE : OESTE;
-            //a posição inicial passada para o arquivo é a mesma independente do sentido
+            //a posição inicial passada para o arquivo era a mesma independente do sentido
             if (sentido==OESTE){
                 fprintf(tab, "%d %c %d %d %d\n", num, id, sentido , i_final-1, j_final-1);
             }else
@@ -158,8 +200,8 @@ int Posicionadora (char m[20][20], int largura,int altura, char id, int num){
                 fprintf(tab, "%d %c %d %d %d\n", num, id, sentido , i_inicial, j_inicial);
             }else
                 fprintf(tab, "%d %c %d %d %d\n", num, id, sentido, i_final-1, j_final-1 );
-        }
-    }
+        }*/
+
     return (1); //retorna 1 se encontrou a posição valida
 }
 //Solicita n Porta aviões
@@ -188,7 +230,7 @@ void Submarino(char m[20][20], int n, char id) {
     int altura = 1;
     for (i = 0; i < n; i++) {
         erro=0;
-        POS = rand() % 4;
+        POS = (rand() % 4);
         if (POS%2)
             Posicao(&largura,&altura);
         while (!erro) {
@@ -196,7 +238,7 @@ void Submarino(char m[20][20], int n, char id) {
         }
     }
 }
-//Solicita n Espiões de identificador id :3
+//Solicita n Espiões de identificador id
 void Espiao (char m[20][20], int n, char id) {
     extern int POS;
     int largura ,altura;
@@ -273,10 +315,10 @@ void GeraTabuleiro(char* nome){  //Primeira função do header, retorna o endere
     Preenche_Matriz(matriz);
     Bomba(matriz,10);
     Aviao(matriz,5,'1');
-    Submarino(matriz,5,'2');
+    //Submarino(matriz,5,'2');
     Espiao(matriz,4,'3');
     Espiao(matriz,4,'4');
-    Porta_Avioes(matriz,2);
+    //Porta_Avioes(matriz,2);
     Printa_Matriz(matriz);  //printa a matriz de char usada para gerar o tabuleiro
     fclose(tab);
 }
