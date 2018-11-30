@@ -12,6 +12,7 @@
 #define LESTE 2
 #define OESTE 3
 
+
 //Declaração de variaveis externas:
 
 int POS; //A Variavel POS será usava pra guardar a posição das embarcações
@@ -309,9 +310,10 @@ void CreateTab(char* nome){
 
 void GeraTabuleiro(char* nome){  //Primeira função do header, retorna o endereço pra um arquivo com dados do tabuleiro
     extern FILE* tab;
+    int i;
     char matriz[20][20];
     CreateTab(nome);
-    srand(time(NULL));
+    srand(rand()%time(NULL));
     Preenche_Matriz(matriz);
     Bomba(matriz,10);
     Aviao(matriz,5,'1');
