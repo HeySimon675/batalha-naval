@@ -136,6 +136,9 @@ int TiroIA(Game* Ojogo){
                             Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row][cow -1].inicial;
                             Ojogo->Player->tab->matriz_campo[row][cow - 1].visivel = 1; //posição fica visivel
                             Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
+                            if(!Ojogo->Player->tab->barcos[id].barcos[num]){
+                                Ojogo->Player->frota_total--;
+                            }
                             return (0);
 
                     }else{
@@ -153,6 +156,9 @@ int TiroIA(Game* Ojogo){
                             Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row][cow + 1].inicial;
                             Ojogo->Player->tab->matriz_campo[row][cow + 1].visivel = 1; //posição fica visivel
                             Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
+                            if(!Ojogo->Player->tab->barcos[id].barcos[num]){
+                                Ojogo->Player->frota_total--;
+                            }
                         return (0);
                     }else{
                         Ojogo->Player->tab->matriz_campo[row][cow + 1].visivel = 1; //posição fica visivel
@@ -170,6 +176,9 @@ int TiroIA(Game* Ojogo){
                                                                                                     1][cow].inicial;
                             Ojogo->Player->tab->matriz_campo[row - 1][cow].visivel = 1; //posição fica visivel
                             Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
+                        if(!Ojogo->Player->tab->barcos[id].barcos[num]){
+                            Ojogo->Player->frota_total--;
+                        }
                         return (0);
                     }else{
                         Ojogo->Player->tab->matriz_campo[row - 1][cow].visivel = 1; //posição fica visivel
@@ -185,6 +194,9 @@ int TiroIA(Game* Ojogo){
                             Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row + 1][cow].inicial;
                             Ojogo->Player->tab->matriz_campo[row + 1][cow].visivel = 1; //posição fica visivel
                             Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
+                        if(!Ojogo->Player->tab->barcos[id].barcos[num]){
+                            Ojogo->Player->frota_total--;
+                        }
                         return (0);
                     }else{
                         Ojogo->Player->tab->matriz_campo[row + 1][cow].visivel = 1; //posição fica visivel
@@ -206,6 +218,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -219,6 +232,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -232,6 +246,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -247,6 +262,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -260,6 +276,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -273,6 +290,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -288,6 +306,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -301,6 +320,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -314,6 +334,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -329,7 +350,9 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->matriz_campo[row-1][cow].visivel=1;
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -343,6 +366,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -356,6 +380,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -378,6 +403,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[4].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[4].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou submarino\n");
                                         return (0); // acertou a posição
@@ -394,6 +420,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[4].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[4].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou submarino\n");
                                         return (0); // acertou a posição
@@ -410,6 +437,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[4].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[4].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou submarino\n");
                                         return (0); // acertou a posição
@@ -426,6 +454,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[4].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[4].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou submarino\n");
                                         return (0); // acertou a posição
@@ -445,6 +474,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -458,6 +488,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -471,6 +502,8 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
+
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -483,6 +516,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -495,6 +529,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -513,6 +548,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -526,6 +562,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -539,6 +576,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -551,6 +589,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -563,6 +602,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -581,6 +621,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -594,6 +635,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -607,6 +649,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -619,6 +662,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -631,6 +675,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -648,6 +693,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -661,6 +707,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -674,6 +721,8 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
+
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -686,6 +735,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -698,6 +748,7 @@ int TiroIA(Game* Ojogo){
                                     Ojogo->Player->tab->barcos[id-'0'].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[id-'0'].barcos[num]){
                                         Ojogo->Player->frota_total--;
+                                        Ojogo->ia->n_alvos--;
                                     }
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
@@ -720,6 +771,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[5].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[5].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou aviao\n");
                                         return (0); // acertou a posição
@@ -732,6 +784,7 @@ int TiroIA(Game* Ojogo){
                                             Ojogo->Player->tab->barcos[5].barcos[num]--;
                                             if(!Ojogo->Player->tab->barcos[5].barcos[num]){
                                                 Ojogo->Player->frota_total--;
+                                                Ojogo->ia->n_alvos--;
                                             }
                                             printf("Acertou aviao\n");
                                             return (0); // acertou a posição
@@ -749,6 +802,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[5].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[5].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou aviao\n");
                                         return (0); // acertou a posição
@@ -761,6 +815,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[5].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[5].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou aviao\n");
                                         return (0); // acertou a posição
@@ -778,6 +833,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[5].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[5].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou aviao\n");
                                         return (0); // acertou a posição
@@ -790,6 +846,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[5].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[5].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou aviao\n");
                                         return (0); // acertou a posição
@@ -808,6 +865,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[5].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[5].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou aviao\n");
                                         return (0); // acertou a posição
@@ -820,6 +878,7 @@ int TiroIA(Game* Ojogo){
                                         Ojogo->Player->tab->barcos[5].barcos[num]--;
                                         if(!Ojogo->Player->tab->barcos[5].barcos[num]){
                                             Ojogo->Player->frota_total--;
+                                            Ojogo->ia->n_alvos--;
                                         }
                                         printf("Acertou aviao\n");
                                         return (0); // acertou a posição
