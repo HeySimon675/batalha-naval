@@ -15,12 +15,17 @@
 int main() {
 
     Game* jogo = NovoGame(TAB_PLAYER,TAB_MAQUINA);
-
+// /*
     do{
-
-    }while (!jogo->fim_de_jogo);
         AtirarPlayer(jogo,PLAYER_ID);
-        AtirarPlayer(jogo,MAQUINA_ID);
+        //AtirarPlayer(jogo,MAQUINA_ID);
+    }while (!jogo->fim_de_jogo);
+    if(jogo->Player->vencedor){
+        printf("VOCE VENCEU\n");
+    }
+    else
+        printf("você perdeu para a maquina\n");
+  //  */
 
     //FILE* tabuleiro1 = CriaTabuleiro;
     //fclose(tabuleiro1);
