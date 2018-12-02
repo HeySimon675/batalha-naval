@@ -6,13 +6,18 @@
 #define CLION_GAME_H
 
 #include "Jogador.h"
+#include "Alvo.h"
+#include "IA.h"
+#include "time.h"
 
 typedef struct {
     Jogador* Player;
     Jogador* Maquina;
     int fim_de_jogo;
+    IA* ia;
 }Game;
 
+IA* IniciaIA ();
 Game* NovoGame(char* tab1,char* tab2);//recebe o txt dos tabuleiros, cria os jogadores, e inicializa os atributos de controles
 void AtirarPlayer(Game* jogo,int id); //requisita as posiçoes i j onde o jogador deseja atirar e
                                         // atualiza o jogo mostrando o efeito da jogada
