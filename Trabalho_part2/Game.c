@@ -73,6 +73,20 @@ int TiroDeJogador(Game* Ojogo) {
         }
     }
 }
+void EncontrouAlvo (IA* ia, int cow, int row, int n, char id, int inicial){
+    int alvos_atuais= ia->n_alvos;
+
+    if(ia->n_alvos  >= ia->max_alvos) {//o vetor esta cheio
+        ia->alvo = NovoAlvo(ia->alvo,ia->max_alvos);
+    }
+        ia->alvo[alvos_atuais]->id=id;
+        ia->alvo[alvos_atuais]->n=n;
+        ia->alvo[alvos_atuais]->inicial=inicial;
+        ia->alvo[alvos_atuais]->cow=cow;
+        ia->alvo[alvos_atuais]->row=row;
+        ia->n_alvos++;
+
+}
 
 int TiroAleatorio (Game* Ojogo){
     int row, cow, numerador,id;
@@ -131,16 +145,22 @@ int TiroIA(Game* Ojogo){
             if (cow > 0) {//POSIÇÃO A ESQUERDA
                 if (!Ojogo->Player->tab->matriz_campo[row][cow - 1].visivel) {  //posição oculta
                     if (Ojogo->Player->tab->matriz_campo[row][cow - 1].valor != '#') { //caso nao seja agua
+                        if(Ojogo->Player->tab->matriz_campo[row][cow-1].id==num) {
                             Ojogo->ia->alvo[alvo_atual]->cow--; //muda a posição do alvo
                             //recebe as coordenadas da posição inicial e o sentido do barco
-                            Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row][cow -1].inicial;
+                            Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row][cow -
+                                                                                                         1].inicial;
                             Ojogo->Player->tab->matriz_campo[row][cow - 1].visivel = 1; //posição fica visivel
                             Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
-                            if(!Ojogo->Player->tab->barcos[id].barcos[num]){
+                            if (!Ojogo->Player->tab->barcos[id].barcos[num]) {
                                 Ojogo->Player->frota_total--;
                             }
                             return (0);
-
+                        }//novo
+                        else{
+                            //NOVO ALVO
+                            EncontrouAlvo(Ojogo->ia,cow-1, row, num, id, Ojogo->Player->tab->matriz_campo[row][cow-1].inicial);
+                        }
                     }else{
                         Ojogo->Player->tab->matriz_campo[row][cow - 1].visivel = 1;
                         return (0);
@@ -151,15 +171,22 @@ int TiroIA(Game* Ojogo){
                 //testa com cow+1
                 if (!Ojogo->Player->tab->matriz_campo[row][cow + 1].visivel) {  //posição oculta
                     if (Ojogo->Player->tab->matriz_campo[row][cow + 1].valor != '#') { //caso nao seja agua
+                        if(Ojogo->Player->tab->matriz_campo[row][cow+1].id==num) {
                             Ojogo->ia->alvo[alvo_atual]->cow++; //muda a posição do alvo
                             //recebe as coordenadas da posição inicial e o sentido do barco
-                            Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row][cow + 1].inicial;
+                            Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row][cow +
+                                                                                                         1].inicial;
                             Ojogo->Player->tab->matriz_campo[row][cow + 1].visivel = 1; //posição fica visivel
                             Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
-                            if(!Ojogo->Player->tab->barcos[id].barcos[num]){
+                            if (!Ojogo->Player->tab->barcos[id].barcos[num]) {
                                 Ojogo->Player->frota_total--;
                             }
-                        return (0);
+                            return (0);
+                        }//novo
+                        else{
+                            //NOVO ALVO
+                            EncontrouAlvo(Ojogo->ia,cow+1, row, num, id, Ojogo->Player->tab->matriz_campo[row][cow+1].inicial);
+                        }
                     }else{
                         Ojogo->Player->tab->matriz_campo[row][cow + 1].visivel = 1; //posição fica visivel
                         return (0);
@@ -169,17 +196,22 @@ int TiroIA(Game* Ojogo){
                 //testa com row-1
                 if (!Ojogo->Player->tab->matriz_campo[row - 1][cow].visivel) {  //posição oculta
                     if (Ojogo->Player->tab->matriz_campo[row - 1][cow].valor != '#') { //caso nao seja agua
-
+                        if(Ojogo->Player->tab->matriz_campo[row-1][cow].id==num) {
                             Ojogo->ia->alvo[alvo_atual]->row--; //muda a posição do alvo
                             //recebe as coordenadas da posição inicial e o sentido do barco
                             Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row -
                                                                                                     1][cow].inicial;
                             Ojogo->Player->tab->matriz_campo[row - 1][cow].visivel = 1; //posição fica visivel
                             Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
-                        if(!Ojogo->Player->tab->barcos[id].barcos[num]){
-                            Ojogo->Player->frota_total--;
+                            if (!Ojogo->Player->tab->barcos[id].barcos[num]) {
+                                Ojogo->Player->frota_total--;
+                            }
+                            return (0);
+                        }//novo
+                        else{
+                            //NOVO ALVO
+                            EncontrouAlvo(Ojogo->ia,cow, row-1, num, id, Ojogo->Player->tab->matriz_campo[row-1][cow].inicial);
                         }
-                        return (0);
                     }else{
                         Ojogo->Player->tab->matriz_campo[row - 1][cow].visivel = 1; //posição fica visivel
                         return (0);
@@ -189,15 +221,20 @@ int TiroIA(Game* Ojogo){
                 //testa com row+1
                 if (!Ojogo->Player->tab->matriz_campo[row + 1][cow].visivel) {  //posição oculta
                     if (Ojogo->Player->tab->matriz_campo[row + 1][cow].valor != '#') { //caso nao seja agua
+                        if(Ojogo->Player->tab->matriz_campo[row+1][cow].id==num) {
                             Ojogo->ia->alvo[alvo_atual]->cow++; //muda a posição do alvo
                             //recebe as coordenadas da posição inicial e o sentido do barco
                             Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row + 1][cow].inicial;
                             Ojogo->Player->tab->matriz_campo[row + 1][cow].visivel = 1; //posição fica visivel
                             Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
-                        if(!Ojogo->Player->tab->barcos[id].barcos[num]){
-                            Ojogo->Player->frota_total--;
+                            if (!Ojogo->Player->tab->barcos[id].barcos[num]) {
+                                Ojogo->Player->frota_total--;
+                            }
+                            return (0);
+                        }else{
+                            //NOVO ALVO
+                            EncontrouAlvo(Ojogo->ia,cow, row+1, num, id, Ojogo->Player->tab->matriz_campo[row+1][cow].inicial);
                         }
-                        return (0);
                     }else{
                         Ojogo->Player->tab->matriz_campo[row + 1][cow].visivel = 1; //posição fica visivel
                         return (0);
@@ -224,6 +261,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow-1, row, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row][cow+1].visivel){ //tenta cow+1
@@ -237,6 +275,7 @@ int TiroIA(Game* Ojogo){
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
                                 }else{
+                                    EncontrouAlvo(Ojogo->ia,cow+1, row, num, id, inicial_sentido);
                                     //NOVO ALVO
                                 }
 
@@ -252,6 +291,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row-1, num, id, inicial_sentido);
                                 }
                             }
                             break;
@@ -268,6 +308,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow-1, row, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row][cow+1].visivel){ //tenta cow+1
@@ -282,6 +323,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow+1, row, num, id, inicial_sentido);
                                 }
 
                             }else{  // row+1
@@ -296,6 +338,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row+1, num, id, inicial_sentido);
                                 }
                             }
                             break;
@@ -312,6 +355,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row-1, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row+1][cow].visivel){ //tenta row+1
@@ -326,6 +370,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row+1, num, id, inicial_sentido);
                                 }
 
                             }else{  // cow-1
@@ -340,6 +385,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow-1, row, num, id, inicial_sentido);
                                 }
                             }
 
@@ -358,6 +404,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row-1, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row+1][cow].visivel){ //tenta row+1
@@ -372,6 +419,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row+1, num, id, inicial_sentido);
                                 }
 
                             }else{  // cow+1
@@ -386,6 +434,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow+1, row, num, id, inicial_sentido);
                                 }
                             }
                             break;
@@ -480,6 +529,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row][cow+1].visivel){ //tenta cow+1
@@ -494,6 +544,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow+1, row, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row-1][cow].visivel){  // row-1
@@ -509,6 +560,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row-1, num, id, inicial_sentido);
                                 }
                             }else if(!Ojogo->Player->tab->matriz_campo[row-2][cow].visivel){  // row-2
                                 if(Ojogo->Player->tab->matriz_campo[row-2][cow].id==num){
@@ -522,6 +574,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row-2, num, id, inicial_sentido);
                                 }
                             }else {  // row-3
                                 if(Ojogo->Player->tab->matriz_campo[row-3][cow].id==num){
@@ -535,6 +588,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row-3, num, id, inicial_sentido);
                                 }
                             }
                             break;
@@ -554,6 +608,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow-1, row, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row][cow+1].visivel){ //tenta cow+1
@@ -568,6 +623,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow+1, row, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row+1][cow].visivel){  // row+1
@@ -582,6 +638,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row+1, num, id, inicial_sentido);
                                 }
                             }else if(!Ojogo->Player->tab->matriz_campo[row+2][cow].visivel){  // row+2
                                 if(Ojogo->Player->tab->matriz_campo[row+2][cow].id==num){
@@ -595,6 +652,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row+2, num, id, inicial_sentido);
                                 }
                             }else {  // row+3
                                 if(Ojogo->Player->tab->matriz_campo[row+3][cow].id==num){
@@ -608,6 +666,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row+3, num, id, inicial_sentido);
                                 }
                             }
                             break;
@@ -627,6 +686,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row-1, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row+1][cow].visivel){ //tenta row+1
@@ -641,6 +701,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row+1, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row][cow-1].visivel){  // cow-1
@@ -655,6 +716,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow-1, row, num, id, inicial_sentido);
                                 }
                             }else if(!Ojogo->Player->tab->matriz_campo[row][cow-2].visivel){  // cow-2
                                 if(Ojogo->Player->tab->matriz_campo[row][cow-2].id==num){
@@ -668,6 +730,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow-2, row, num, id, inicial_sentido);
                                 }
                             }else {  // cow-3
                                 if(Ojogo->Player->tab->matriz_campo[row][cow-3].id==num){
@@ -681,6 +744,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow-3, row, num, id, inicial_sentido);
                                 }
                             }
                             break;
@@ -699,6 +763,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow, row-1, num, id, inicial_sentido);
                                 }
 
                             }else if(!Ojogo->Player->tab->matriz_campo[row+1][cow].visivel){ //tenta row+1
@@ -712,6 +777,7 @@ int TiroIA(Game* Ojogo){
                                     printf("Acertou aviao\n");
                                     return (0); // acertou a posição
                                 }else{
+                                    EncontrouAlvo(Ojogo->ia,cow, row+1, num, id, inicial_sentido);
                                     //NOVO ALVO
                                 }
 
@@ -728,6 +794,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow+1, row, num, id, inicial_sentido);
                                 }
                             }else if(!Ojogo->Player->tab->matriz_campo[row][cow+2].visivel){  // cow+2
                                 if(Ojogo->Player->tab->matriz_campo[row][cow+2].id==num){
@@ -741,6 +808,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow+2, row, num, id, inicial_sentido);
                                 }
                             }else {  // cow+3
                                 if(Ojogo->Player->tab->matriz_campo[row][cow+3].id==num){
@@ -754,6 +822,7 @@ int TiroIA(Game* Ojogo){
                                     return (0); // acertou a posição
                                 }else{
                                     //NOVO ALVO
+                                    EncontrouAlvo(Ojogo->ia,cow+3, row, num, id, inicial_sentido);
                                 }
                             }
                             break;
@@ -777,6 +846,7 @@ int TiroIA(Game* Ojogo){
                                         return (0); // acertou a posição
                                     }else{
                                         //NOVO ALVO
+                                        EncontrouAlvo(Ojogo->ia,cow+1, row, num, id, inicial_sentido);
                                     }
                                 }else if(!Ojogo->Player->tab->matriz_campo[row+i][cow].visivel){
                                         if(Ojogo->Player->tab->matriz_campo[row+i][cow].id==num){
@@ -790,6 +860,7 @@ int TiroIA(Game* Ojogo){
                                             return (0); // acertou a posição
                                         }else{
                                             //NOVO ALVO
+                                            EncontrouAlvo(Ojogo->ia,cow, row+i, num, id, inicial_sentido);
                                         }
                                 }
                             }
@@ -808,6 +879,7 @@ int TiroIA(Game* Ojogo){
                                         return (0); // acertou a posição
                                     }else{
                                         //NOVO ALVO
+                                        EncontrouAlvo(Ojogo->ia,cow-i, row+1, num, id, inicial_sentido);
                                     }
                                 }else if(!Ojogo->Player->tab->matriz_campo[row-i][cow].visivel){
                                     if(Ojogo->Player->tab->matriz_campo[row-i][cow].id==num){
@@ -821,6 +893,7 @@ int TiroIA(Game* Ojogo){
                                         return (0); // acertou a posição
                                     }else{
                                         //NOVO ALVO
+                                        EncontrouAlvo(Ojogo->ia,cow, row-i, num, id, inicial_sentido);
                                     }
                                 }
                             }
@@ -839,6 +912,7 @@ int TiroIA(Game* Ojogo){
                                         return (0); // acertou a posição
                                     }else{
                                         //NOVO ALVO
+                                        EncontrouAlvo(Ojogo->ia,cow+i, row+1, num, id, inicial_sentido);
                                     }
                                 }else if(!Ojogo->Player->tab->matriz_campo[row][cow+i].visivel){
                                     if(Ojogo->Player->tab->matriz_campo[row][cow+i].id==num){
@@ -852,6 +926,7 @@ int TiroIA(Game* Ojogo){
                                         return (0); // acertou a posição
                                     }else{
                                         //NOVO ALVO
+                                        EncontrouAlvo(Ojogo->ia,cow+i, row, num, id, inicial_sentido);
                                     }
                                 }
                             }
@@ -871,6 +946,7 @@ int TiroIA(Game* Ojogo){
                                         return (0); // acertou a posição
                                     }else{
                                         //NOVO ALVO
+                                        EncontrouAlvo(Ojogo->ia,cow-i, row+1, num, id, inicial_sentido);
                                     }
                                 }else if(!Ojogo->Player->tab->matriz_campo[row][cow+i].visivel){
                                     if(Ojogo->Player->tab->matriz_campo[row][cow+i].id==num){
@@ -884,6 +960,7 @@ int TiroIA(Game* Ojogo){
                                         return (0); // acertou a posição
                                     }else{
                                         //NOVO ALVO
+                                        EncontrouAlvo(Ojogo->ia,cow+i, row, num, id, inicial_sentido);
                                     }
                                 }
                             }
