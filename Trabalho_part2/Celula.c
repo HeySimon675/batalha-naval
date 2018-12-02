@@ -8,8 +8,9 @@
 Celula CriaCelula(){
     Celula c;
     c.visivel=0;
-    c.valor= '*';
+    c.valor= '#';
     c.inicial=0;
+    c.id=0;
     return (c);
 }
 void DestroiCelula(Celula* campo){
