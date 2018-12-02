@@ -8,12 +8,14 @@
 #define LESTE 2
 #define OESTE 3
 
-void IncluiBomba (Tabuleiro* tab,int i, int j) {
+
+void IncluiBomba (Tabuleiro* tab,int i, int j, char n) {
     tab->matriz_campo[i][j-1].valor='0'; //(j-1) pois não encontrei o erro onde a bomba ficava sempre uma coluna a frente, o que não fazia nenhum sentido
+    tab->matriz_campo[i][j-1].id=n;
 }
 void IncluiAviao (Tabuleiro* tab,int i, int j, int pos){
     int x, y;
-    tab->matriz_campo[i][j].inicial=1;
+    tab->matriz_campo[i][j].inicial=(pos+1);
     switch (pos){
         case LESTE: //LESTE
             y=j;
@@ -50,7 +52,7 @@ void IncluiAviao (Tabuleiro* tab,int i, int j, int pos){
 
 void IncluiSubmarino (Tabuleiro* tab, int i, int j, char* pos){
     int x, y ;
-    tab->matriz_campo[i][j].inicial=1;
+    tab->matriz_campo[i][j].inicial=(atoi(pos)+1);
     switch (*pos){
         case '2': //LESTE
             for(y=j; y<(j+4) ; y++){  //(y+4) esta definindo o limite de largura do submarino
@@ -78,6 +80,7 @@ void IncluiSubmarino (Tabuleiro* tab, int i, int j, char* pos){
 
 void IncluiEspiao (Tabuleiro* tab, int i, int j, int pos,char id){
     int x,y;
+    tab->matriz_campo[i][j].inicial=(pos+1);
     switch (pos){
         case LESTE: //LESTE
             for(y=j; y<(j+4) ; y++){  //(y+4) esta definindo o limite de largura do espiao
@@ -112,7 +115,7 @@ void IncluiEspiao (Tabuleiro* tab, int i, int j, int pos,char id){
 
 void IncluiPAviao (Tabuleiro* tab, int i, int j, int pos){
     int x, y ;
-    tab->matriz_campo[i][j].inicial=1;
+    tab->matriz_campo[i][j].inicial=(pos+1);
     switch (pos){
         case LESTE: //LESTE
 
@@ -152,7 +155,7 @@ void IncluiEmbarc (Tabuleiro* tab, FILE* tabfile){
     char n,id,pos[2],i[3],j[3];
     while (fscanf(tabfile,"%[^ ] %[^ ] %[^ ] %[^ ] %[^\n]\n",&n,&id,pos,i,j) != EOF){
         if(id=='0') {
-            IncluiBomba(tab, (atoi(i)), atoi(j));
+            IncluiBomba(tab, (atoi(i)), atoi(j),n);
         }else if (id=='1'){
             IncluiAviao(tab,atoi(i),atoi(j),atoi(pos));
         }else if (id=='2'){
@@ -183,14 +186,16 @@ Tabuleiro* CriaTabuleiro(char* txt){
     for (i = 0; i < COW; i++) {
         tab->matriz_campo[i]= (Celula*) malloc(ROW* sizeof(Celula));
     }
+    tab->barcos = CriaBarcos();
     GeraTabuleiro(txt);
     tabfile = fopen(txt,"r");
     PreencheTabuleiro(tab);
     IncluiEmbarc(tab,tabfile);
-    PrintaTabuleiro(tab);
+    PrintaTabNovo(tab);
+    return (tab);
 }
 
-void PrintaTabuleiro (Tabuleiro* tab){
+void PrintaTabNovo (Tabuleiro *tab){
     int i;
     char j;
     printf("   ");
@@ -201,6 +206,24 @@ void PrintaTabuleiro (Tabuleiro* tab){
         printf("%2d ",i);
         for(j=0;j< tab->colunas ;j++)
             printf("%c ",tab->matriz_campo[i][j].valor);
+        printf("\n");
+    }
+}
+
+void PrintaTabuleiro (Celula** matriz, int row){
+    int i;
+    char j;
+    printf("   ");
+    for(j='A';j<'A'+ COW;j++) // printa o cabeçalho da matriz de A até T
+        printf("%c ",j);
+    printf("\n");
+    for(i=0;i< ROW ;i++){
+        printf("%2d ",i);
+        for(j=0;j< COW ;j++)
+            if(matriz[i][j].visivel)
+                printf("%c ",matriz[i][j].valor);
+            else
+                printf("* ");
         printf("\n");
     }
 }
