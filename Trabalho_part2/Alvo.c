@@ -15,3 +15,8 @@ Alvos** VetorAlvos(){
 
 }
 
+Alvos** NovoAlvo (Alvos** vetor, int tamanho){
+    vetor= (Alvos**) realloc(vetor,(tamanho+1* sizeof(Alvos*)));
+    vetor[tamanho] = (Alvos*) malloc(sizeof(Alvos));
+    return (vetor);
+}
