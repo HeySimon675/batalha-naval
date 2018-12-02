@@ -83,94 +83,474 @@ int TiroAleatorio (Game* Ojogo){
         return (TiroAleatorio(Ojogo));
     }
     else{   //caso a posição ainda nao tenha sido acertada
-        if(Ojogo->Player->tab->matriz_campo[row][cow].valor=='0'){ //caso acerte uma bomba
+        if(Ojogo->Player->tab->matriz_campo[row][cow].valor=='#'){  //ACERTOU NA AGUA
             Ojogo->Player->tab->matriz_campo[row][cow].visivel=1;
+            printf("tiro na agua\n");
+            return(1);
+        }
+        else if(Ojogo->Player->tab->matriz_campo[row][cow].valor=='0'){ //caso acerte uma bomba
+            Ojogo->Player->tab->matriz_campo[row][cow].visivel=1; //POSIÇÃO VISIVEL
             numerador= Ojogo->Player->tab->matriz_campo[row][cow].id - '0'; //numerador do tipo
             Ojogo->Player->tab->barcos[0].barcos[numerador]=0;  //zera o contador de casas disponiveis da bomba
             Ojogo->Player->frota_total--;   //diminui a frota total;
             printf("Atingiu uma bomba\n");
+            return (1);
         }else {
             id = Ojogo->Player->tab->matriz_campo[row][cow].valor - '0';
-            switch (id){        // O NOVO ALVO É UMA EMBARCAÇÃO COM ID != 0
-                case 1:
-
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-
-                    break;
-                case 4:
-
-                    break;
-                case 5:
-
-                    break;
-            }
+            Ojogo->Player->tab->matriz_campo[row][cow].visivel=1;//POSICAO VISIVEL
+            numerador= Ojogo->Player->tab->matriz_campo[row][cow].id - '0'; //numerador do tipo
+            Ojogo->Player->tab->barcos[id].barcos[numerador]--;  //subtrai uma casa do contador barcos
+            Ojogo->ia->n_alvos++;   //novo alvo adicionado
+            //preechimento do novo alvo, o novo alvo recebe o id do barco
+            Ojogo->ia->alvo[Ojogo->ia->n_alvos-1]->id= Ojogo->Player->tab->matriz_campo[row][cow].valor;
+            Ojogo->ia->alvo[Ojogo->ia->n_alvos-1]->inicial = Ojogo->Player->tab->matriz_campo[row][cow].inicial;
+            Ojogo->ia->alvo[Ojogo->ia->n_alvos-1]->row = row;
+            Ojogo->ia->alvo[Ojogo->ia->n_alvos-1]->cow = cow;
+            Ojogo->ia->alvo[Ojogo->ia->n_alvos-1]->n = numerador;
+            return (1);
         }
     }
-
-
 }
 
 int TiroIA(Game* Ojogo){
     int alvo_atual;
     int row, cow, inicial_sentido, loop;
-    if(Ojogo->ia->n_alvos){ //caso algum alvo ja tenha sido acertado
-        alvo_atual=Ojogo->ia->n_alvos-1; // recebe o indice do ultimo alvo descoberto
-        inicial_sentido=Ojogo->ia->alvo[alvo_atual]->inicial;
-            switch (Ojogo->ia->alvo[alvo_atual]->id){ //estrategia padrão caso a posição inicial seja acertada
+    char id;
+    int num ;
+    if(Ojogo->ia->n_alvos) { //caso algum alvo ja tenha sido acertado
+        alvo_atual = Ojogo->ia->n_alvos - 1; // recebe o indice do ultimo alvo descoberto
+        inicial_sentido = Ojogo->ia->alvo[alvo_atual]->inicial;
+        //coleta linha e coluna do alvo
+        row = Ojogo->ia->alvo[alvo_atual]->row;
+        cow = Ojogo->ia->alvo[alvo_atual]->cow;
+        id = Ojogo->ia->alvo[alvo_atual]->id;
+        num = Ojogo->ia->alvo[alvo_atual]->n;
 
-                //VERIFICIA SE A POSIÇÃO INICIAL FOI ACERTADA E QUAL FOI O SENTIDO, ENTAO EXECUTA A ESTRATEGIA PADRAO
-                //SE A POSIÇÃO INICIAL FOR ENCONTRADA NA ESTRATEGIA CRUZ ELA SUBSTITUI A COORDENADA NO TAD ALVOS
+        if (!inicial_sentido) {
+            //estrategia de cruz
+            if (cow > 0) {//POSIÇÃO A ESQUERDA
+                if (!Ojogo->Player->tab->matriz_campo[row][cow - 1].visivel) {  //posição oculta
+                    if (Ojogo->Player->tab->matriz_campo[row][cow - 1].valor != '#') { //caso nao seja agua
+                        if (Ojogo->Player->tab->matriz_campo[row][cow - 1].inicial) { //caso seja a posição inicial
+                            Ojogo->ia->alvo[alvo_atual]->cow--; //muda a posição do alvo
+                            //recebe as coordenadas da posição inicial e o sentido do barco
+                            Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row][cow -
+                                                                                                         1].inicial;
+                            Ojogo->Player->tab->matriz_campo[row][cow - 1].visivel = 1; //posição fica visivel
+                            Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
+                        } else {
+                            //caso nao seja a posição inicial
+                        }
+                    }
+                }
+            } else if (cow < 20) {
+                //testa com cow+1
+                if (!Ojogo->Player->tab->matriz_campo[row][cow + 1].visivel) {  //posição oculta
+                    if (Ojogo->Player->tab->matriz_campo[row][cow + 1].valor != '#') { //caso nao seja agua
+                        if (Ojogo->Player->tab->matriz_campo[row][cow + 1].inicial) { //caso seja a posição inicial
+                            Ojogo->ia->alvo[alvo_atual]->cow++; //muda a posição do alvo
+                            //recebe as coordenadas da posição inicial e o sentido do barco
+                            Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row][cow +
+                                                                                                         1].inicial;
+                            Ojogo->Player->tab->matriz_campo[row][cow + 1].visivel = 1; //posição fica visivel
+                            Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
+                        } else {
+                            //caso nao seja a posição inicial
+                        }
+                    }
+                }
+            } else if (row > 0) {
+                //testa com row-1
+                if (!Ojogo->Player->tab->matriz_campo[row - 1][cow].visivel) {  //posição oculta
+                    if (Ojogo->Player->tab->matriz_campo[row - 1][cow].valor != '#') { //caso nao seja agua
+                        if (Ojogo->Player->tab->matriz_campo[row - 1][cow].inicial) { //caso seja a posição inicial
+                            Ojogo->ia->alvo[alvo_atual]->row--; //muda a posição do alvo
+                            //recebe as coordenadas da posição inicial e o sentido do barco
+                            Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row -
+                                                                                                    1][cow].inicial;
+                            Ojogo->Player->tab->matriz_campo[row - 1][cow].visivel = 1; //posição fica visivel
+                            Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
+                        } else {
+                            //caso nao seja a posição inicial
+                        }
+                    }
+                }
+            } else if (row < 20) {
+                //testa com row+1
+                if (!Ojogo->Player->tab->matriz_campo[row + 1][cow].visivel) {  //posição oculta
+                    if (Ojogo->Player->tab->matriz_campo[row + 1][cow].valor != '#') { //caso nao seja agua
+                        if (Ojogo->Player->tab->matriz_campo[row + 1][cow].inicial) { //caso seja a posição inicial
+                            Ojogo->ia->alvo[alvo_atual]->cow++; //muda a posição do alvo
+                            //recebe as coordenadas da posição inicial e o sentido do barco
+                            Ojogo->ia->alvo[alvo_atual]->inicial = Ojogo->Player->tab->matriz_campo[row +
+                                                                                                    1][cow].inicial;
+                            Ojogo->Player->tab->matriz_campo[row + 1][cow].visivel = 1; //posição fica visivel
+                            Ojogo->Player->tab->barcos[id].barcos[num]--;   //diminui em 1 o numero de posiçoes ativas do barco
+                        } else {
+                            //caso nao seja a posição inicial
+                        }
+                    }
+                }
+            }
+        } else {
+            switch (id) { //estrategia padrão caso a posição inicial esteja no alvo
+
+                //A POSIÇÃO INICIAL FOI ACERTADA CONFORME O SENTIDO, ENTAO EXECUTA A ESTRATEGIA PADRAO
                 case '1':   //AVIAO
+                    switch (inicial_sentido){
+                        case 1: //NORTE
+                            if(!Ojogo->Player->tab->matriz_campo[row][cow-1].visivel){//tenta cow-1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow-1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow-1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
 
-                    if(inicial_sentido){
-                        //FUNÇÃO QUE ATIRA SEGUINDO A ESTRATEGIA PADRAO
+                            }else if(!Ojogo->Player->tab->matriz_campo[row][cow+1].visivel){ //tenta cow+1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow+1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow+1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else{  // row-1
+                                if(Ojogo->Player->tab->matriz_campo[row-1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row-1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }
+                            break;
+                        case 2: //SUL
+                            if(!Ojogo->Player->tab->matriz_campo[row][cow-1].visivel){//tenta cow-1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow-1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow-1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else if(!Ojogo->Player->tab->matriz_campo[row][cow+1].visivel){ //tenta cow+1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow+1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow+1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else{  // row+1
+                                if(Ojogo->Player->tab->matriz_campo[row+1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row+1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }
+                            break;
+                        case 3:     //LESTE
+                            if(!Ojogo->Player->tab->matriz_campo[row-1][cow].visivel){//tenta row-1
+                                if(Ojogo->Player->tab->matriz_campo[row-1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row-1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else if(!Ojogo->Player->tab->matriz_campo[row+1][cow].visivel){ //tenta row+1
+                                if(Ojogo->Player->tab->matriz_campo[row+1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row+1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else{  // cow-1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow-1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow-1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }
+
+                            break;
+                        case 4: //OESTE
+                            if(!Ojogo->Player->tab->matriz_campo[row-1][cow].visivel){//tenta row-1
+                                if(Ojogo->Player->tab->matriz_campo[row-1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row-1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else if(!Ojogo->Player->tab->matriz_campo[row+1][cow].visivel){ //tenta row+1
+                                if(Ojogo->Player->tab->matriz_campo[row+1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row+1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else{  // cow+1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow+1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow+1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }
+                            break;
                     }
-                    else{
-                        //estrategia de cruz
-                    }
+
+
                     break;
                 case '2': //SUBMARINO, DESATIVADO POIS SUBMARINO NAO ESTA NA MATRIZ
-                    if(inicial_sentido){
-                        //FUNÇÃO QUE ATIRA SEGUINDO A ESTRATEGIA PADRAO
-                    }else{
-                        //estrategia cruz
-                    }
-                break;
-                case '3':   //ESPIAO
 
-                    if(inicial_sentido){
-                        //FUNÇÃO QUE ATIRA SEGUINDO A ESTRATEGIA PADRAO
-                    }
-                    else{
-                    //estrategia cruz
-                    }
                     break;
+                case '3':   //ESPIAO
                 case '4': //ESPIAO, codigo vai ser o mesmo que pra '3'
+                    switch (inicial_sentido){
+                        case 2: //SUL
+                            if(!Ojogo->Player->tab->matriz_campo[row][cow-1].visivel){//tenta cow-1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow-1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow-1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
 
-                    if(inicial_sentido){
-                        //FUNÇÃO QUE ATIRA SEGUINDO A ESTRATEGIA PADRAO
+                            }else if(!Ojogo->Player->tab->matriz_campo[row][cow+1].visivel){ //tenta cow+1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow+1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow+1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else{  // row-1
+                                if(Ojogo->Player->tab->matriz_campo[row-1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row-1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }
+                            break;
+                        case 1: //NORTE
+                            if(!Ojogo->Player->tab->matriz_campo[row][cow-1].visivel){//tenta cow-1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow-1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow-1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else if(!Ojogo->Player->tab->matriz_campo[row][cow+1].visivel){ //tenta cow+1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow+1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow+1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else{  // row+1
+                                if(Ojogo->Player->tab->matriz_campo[row+1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row+1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }
+                            break;
+                        case 4:     //OESTE
+                            if(!Ojogo->Player->tab->matriz_campo[row-1][cow].visivel){//tenta row-1
+                                if(Ojogo->Player->tab->matriz_campo[row-1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row-1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else if(!Ojogo->Player->tab->matriz_campo[row+1][cow].visivel){ //tenta row+1
+                                if(Ojogo->Player->tab->matriz_campo[row+1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row+1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else{  // cow-1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow-1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow-1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }
+
+                            break;
+                        case 3: //LESTE
+                            if(!Ojogo->Player->tab->matriz_campo[row-1][cow].visivel){//tenta row-1
+                                if(Ojogo->Player->tab->matriz_campo[row-1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row-1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else if(!Ojogo->Player->tab->matriz_campo[row+1][cow].visivel){ //tenta row+1
+                                if(Ojogo->Player->tab->matriz_campo[row+1][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row+1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+
+                            }else{  // cow+1
+                                if(Ojogo->Player->tab->matriz_campo[row][cow+1].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row][cow+1].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }
+                            break;
                     }
-                    else{
-                        //estrategia cruz
-                    }
+
+
                     break;
                 case '5':   //  PORTA AVIOES, DESATIVADO
 
-                    if(inicial_sentido){
-                        //FUNÇÃO QUE ATIRA SEGUINDO A ESTRATEGIA PADRAO
-                    }
-                    else{
-                        //estrategia cruz
-                    }
+
                     break;
             }
 
         }
-        else{   //CASO NA TENHAM ALVOS
+
+    }else{   //CASO NAO TENHAM ALVOS
             loop = TiroAleatorio(Ojogo);
         }
     return (0);
