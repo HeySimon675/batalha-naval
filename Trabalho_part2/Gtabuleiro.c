@@ -61,7 +61,6 @@ void Coloca_Submarino (char m[20][20], int i_inicial, int j_inicial, int i_final
 
 }
 
-
 //COLOCA EMBARCAÇÃO DO TIPO ESPIAO NA MATRIZ
 void Coloca_Espiao (char m[20][20], int i_inicial,int j_inicial,int i_final,int j_final,char id,int num){
     extern int POS;
