@@ -8,7 +8,8 @@
 typedef struct {
     int visivel;
     char valor;
-    int inicial;
+    int inicial; //vai receber valores de 1-5 cada um para um sentido
+    char id;
 }Celula;
 
 Celula CriaCelula();
