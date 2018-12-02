@@ -400,9 +400,33 @@ int TiroIA(Game* Ojogo){
                                     //NOVO ALVO
                                 }
 
-                            }else{  // row-1
+                            }else if(!Ojogo->Player->tab->matriz_campo[row][cow-1].visivel){  // row-1
                                 if(Ojogo->Player->tab->matriz_campo[row-1][cow].id==num){
                                     Ojogo->Player->tab->matriz_campo[row-1][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }else if(!Ojogo->Player->tab->matriz_campo[row][cow-2].visivel){  // row-2
+                                if(Ojogo->Player->tab->matriz_campo[row-2][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row-2][cow].visivel=1;
+                                    Ojogo->Player->tab->barcos[1].barcos[num]--;
+                                    if(!Ojogo->Player->tab->barcos[1].barcos[num]){
+                                        Ojogo->Player->frota_total--;
+                                    }
+                                    printf("Acertou aviao\n");
+                                    return (0); // acertou a posição
+                                }else{
+                                    //NOVO ALVO
+                                }
+                            }else {  // row-3
+                                if(Ojogo->Player->tab->matriz_campo[row-3][cow].id==num){
+                                    Ojogo->Player->tab->matriz_campo[row-3][cow].visivel=1;
                                     Ojogo->Player->tab->barcos[1].barcos[num]--;
                                     if(!Ojogo->Player->tab->barcos[1].barcos[num]){
                                         Ojogo->Player->frota_total--;
