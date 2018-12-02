@@ -15,6 +15,6 @@ typedef struct {
 
 Alvos** VetorAlvos ();
 
-Alvos** NovoAlvo (Alvos** vetor);
+Alvos** NovoAlvo (Alvos** vetor, int tamanho);
 
 #endif //CLION_ALVO_H
